@@ -1,0 +1,47 @@
+<div class="card border border-dark bg-dark text-white">
+    <div class="card-header">
+        <strong><i class="fa fa-list"></i> {{title}}</strong>
+    </div>
+    <div class="card-body table-responsive">
+        <div id="table-desktop">
+            <table class="table table-bordered table-condensed table-hover table-striped table-dark ">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Priority</th>
+                        <th>Due Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let card of cards">
+                        <tr>
+                            <td>{{card.id}}</td>
+                            <td>{{card.title}}</td>
+                            <td>{{card.description}}</td>
+                            <td>{{card.category}}</td>
+                            <td>{{card.status}}</td>
+                            <td>{{card.priority}}</td>
+                            <td>{{card.date}}</td>
+                            <td>
+                                <a routerLink="/edit/card/{{card.id}}" class="btn btn-info btn-sm"><i
+                                        class="fa fa-pencil-square-o"></i> Edit</a>&nbsp;
+                                <button class="btn btn-danger btn-sm" (click)="deleteCard(card)"><i
+                                        class="fa fa-trash-o"></i> Delete</button>
+                            </td>
+                        </tr>
+                    </ng-container>
+                    <tr align="center" *ngIf="!cards">
+                        <td colspan="">{{loadingMessage}}</td>
+                    </tr>
+                    <tr align="center" *ngIf="cards && cards.length == 0">
+                        <td colspan="6">{{noCards}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
