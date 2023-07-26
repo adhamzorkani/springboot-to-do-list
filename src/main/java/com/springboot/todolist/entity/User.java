@@ -1,7 +1,10 @@
 package com.springboot.todolist.entity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,9 +15,13 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,7 +34,7 @@ public class User {
 
 	private boolean active;
 
-	private String roles;
+	private List<GrantedAuthority> authorities;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Card> cards = new ArrayList<>();
@@ -36,11 +43,14 @@ public class User {
 
 	}
 
-	public User(String username, String password, boolean active, String roles, List<Card> cards) {
+	public User(String username, String password, boolean active, String authorities, List<Card> cards) {
 		this.username = username;
 		this.password = password;
 		this.active = active;
-		this.roles = roles;
+		this.authorities = Arrays.stream(authorities.split(","))
+				.map(SimpleGrantedAuthority::new)
+				.collect(Collectors.toList());
+		;
 		this.cards = cards;
 	}
 
@@ -76,12 +86,8 @@ public class User {
 		this.active = active;
 	}
 
-	public String getRoles() {
-		return roles;
-	}
-
-	public void setRoles(String roles) {
-		this.roles = roles;
+	public void setAuthorities(List<GrantedAuthority> authorities) {
+		this.authorities = authorities;
 	}
 
 	public List<Card> getCards() {
@@ -90,6 +96,31 @@ public class User {
 
 	public void setCards(List<Card> cards) {
 		this.cards = cards;
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return authorities;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return active;
 	}
 
 }

@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.springboot.todolist.entity.MyUserDetails;
 import com.springboot.todolist.entity.User;
 import com.springboot.todolist.repository.UserRepository;
 
@@ -24,7 +23,7 @@ public class MyUserDetailsService implements UserDetailsService {
 
         user.orElseThrow(() -> new UsernameNotFoundException("Not found: " + username));
 
-        return user.map(MyUserDetails::new).get();
+        return user.get();
     }
 
 }
