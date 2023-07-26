@@ -34,7 +34,7 @@ public class User implements UserDetails {
 
 	private boolean active;
 
-	private List<GrantedAuthority> authorities;
+	private String authorities;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Card> cards = new ArrayList<>();
@@ -47,10 +47,7 @@ public class User implements UserDetails {
 		this.username = username;
 		this.password = password;
 		this.active = active;
-		this.authorities = Arrays.stream(authorities.split(","))
-				.map(SimpleGrantedAuthority::new)
-				.collect(Collectors.toList());
-		;
+		this.authorities = authorities;
 		this.cards = cards;
 	}
 
@@ -86,7 +83,7 @@ public class User implements UserDetails {
 		this.active = active;
 	}
 
-	public void setAuthorities(List<GrantedAuthority> authorities) {
+	public void setAuthorities(String authorities) {
 		this.authorities = authorities;
 	}
 
@@ -100,7 +97,10 @@ public class User implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return authorities;
+		List<GrantedAuthority> auth =  Arrays.stream(authorities.split(","))
+				.map(SimpleGrantedAuthority::new)
+				.collect(Collectors.toList());
+		return auth;
 	}
 
 	@Override
