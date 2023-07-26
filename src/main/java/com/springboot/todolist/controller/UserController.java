@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.springboot.todolist.entity.Card;
 import com.springboot.todolist.entity.User;
-import com.springboot.todolist.models.AuthenticationRequest;
-import com.springboot.todolist.models.AuthenticationResponse;
+import com.springboot.todolist.models.request.AuthenticationRequest;
+import com.springboot.todolist.models.response.AuthenticationResponse;
 import com.springboot.todolist.service.ICardService;
 import com.springboot.todolist.service.IUserService;
 import com.springboot.todolist.service.MyUserDetailsService;

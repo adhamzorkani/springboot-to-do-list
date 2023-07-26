@@ -1,4 +1,4 @@
-package com.springboot.todolist.models;
+package com.springboot.todolist.models.response;
 
 import java.io.Serializable;
 
