@@ -17,12 +17,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.springboot.todolist.entity.AuthenticationRequest;
-import com.springboot.todolist.entity.AuthenticationResponse;
 import com.springboot.todolist.entity.Card;
 import com.springboot.todolist.entity.User;
+import com.springboot.todolist.models.AuthenticationRequest;
+import com.springboot.todolist.models.AuthenticationResponse;
 import com.springboot.todolist.service.ICardService;
 import com.springboot.todolist.service.IUserService;
 import com.springboot.todolist.service.MyUserDetailsService;
@@ -50,13 +51,13 @@ public class UserController {
 		this.cardService = cardService;
 	}
 
-	@PostMapping
+	@PostMapping("/register")
 	public ResponseEntity<User> registerUser(@RequestBody User user) {
 		return new ResponseEntity<User>(userService.registerUser(user), HttpStatus.CREATED);
 	}
 
-	@PostMapping("/login")
-	public ResponseEntity<?> login(@RequestBody AuthenticationRequest authenticationRequest)
+	@PostMapping("/authenticate")
+	public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest)
 			throws Exception {
 
 		try {
@@ -67,14 +68,14 @@ public class UserController {
 			throw new Exception("Incorrect username or password", e);
 		}
 
-		final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+		final UserDetails userDetails =  userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
 
 		final String jwt = jwtTokenUtil.generateToken(userDetails);
 
 		return ResponseEntity.ok(new AuthenticationResponse(jwt));
 	}
 
-	@GetMapping("/admin")
+	@GetMapping("/admin/users")
 	public List<User> getUsers() {
 		return userService.getUsers();
 	}
@@ -84,20 +85,15 @@ public class UserController {
 		return new ResponseEntity<User>(userService.getUserById(id), HttpStatus.OK);
 	}
 
-	@DeleteMapping("/admin/{id}")
+	@DeleteMapping("/admin/user/{id}")
 	public ResponseEntity<String> deleteUser(@PathVariable long id) {
 		userService.deleteUser(id);
 		return new ResponseEntity<String>("User deleted successfully!", HttpStatus.OK);
 	}
 
-	@PutMapping("/admin/{id}")
+	@PutMapping("/admin/user/{id}")
 	public ResponseEntity<User> updateUser(@RequestBody User user, @PathVariable long id) {
 		return new ResponseEntity<User>(userService.updateUser(user, id), HttpStatus.OK);
-	}
-
-	@PostMapping("/user/cards/{id}")
-	public ResponseEntity<Card> saveCard(@RequestBody Card card, @PathVariable long id) {
-		return new ResponseEntity<Card>(cardService.saveCard(card, id), HttpStatus.CREATED);
 	}
 
 	@GetMapping("/admin/cards")
@@ -105,7 +101,12 @@ public class UserController {
 		return cardService.getToDoList();
 	}
 
-	@GetMapping("/admin/cards/{id}")
+	@PostMapping("/user/cards/{id}")
+	public ResponseEntity<Card> saveCard(@RequestBody Card card, @PathVariable long id) {
+		return new ResponseEntity<Card>(cardService.saveCard(card, id), HttpStatus.CREATED);
+	}
+
+	@GetMapping("/user/cards/{id}")
 	public ResponseEntity<Card> getCardById(@PathVariable long id) {
 		return new ResponseEntity<Card>(cardService.getCardById(id), HttpStatus.OK);
 	}

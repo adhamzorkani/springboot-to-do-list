@@ -1,4 +1,4 @@
-package com.springboot.todolist.entity;
+package com.springboot.todolist.models;
 
 import java.io.Serializable;
 
