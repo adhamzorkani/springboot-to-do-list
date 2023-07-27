@@ -16,7 +16,7 @@ public class MyUserDetails implements UserDetails {
     private String username;
     private String password;
     private boolean active;
-    private String authorities;
+    private List<GrantedAuthority> authorities;
 
     public MyUserDetails() {
     }
@@ -25,14 +25,13 @@ public class MyUserDetails implements UserDetails {
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.active = user.isActive();
-        this.authorities = user.getAuthorities();
+        this.authorities = Arrays.stream(user.getAuthorities().split(",")).map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> auth = Arrays.stream(authorities.split(",")).map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
-        return auth;
+        return authorities;
     }
 
     @Override

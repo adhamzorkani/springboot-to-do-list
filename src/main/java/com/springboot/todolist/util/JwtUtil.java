@@ -2,17 +2,19 @@ package com.springboot.todolist.util;
 
 import org.springframework.stereotype.Component;
 
+import com.springboot.todolist.entity.User;
+
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Date;
-// import java.util.List;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -80,12 +82,12 @@ public class JwtUtil {
         }
     }
 
-    public String getEmail(Claims claims) {
+    public String getUsername(Claims claims) {
         return claims.getSubject();
     }
 
-    // private List<String> getRoles(Claims claims) {
-    // return (List<String>) claims.get("roles");
-    // }
+    private List<String> getRoles(Claims claims) {
+        return (List<String>) claims.get("roles");
+    }
 
 }

@@ -10,10 +10,13 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.springboot.todolist.models.MyUserDetails;
+import com.springboot.todolist.service.MyUserDetailsService;
 import com.springboot.todolist.util.JwtUtil;
 
 import io.jsonwebtoken.Claims;
@@ -27,10 +30,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final ObjectMapper mapper;
+    private final MyUserDetailsService userDetailsService;
 
-    public JwtAuthorizationFilter(JwtUtil jwtUtil, ObjectMapper mapper) {
+    public JwtAuthorizationFilter(JwtUtil jwtUtil, ObjectMapper mapper, MyUserDetailsService userDetailsService) {
         this.jwtUtil = jwtUtil;
         this.mapper = mapper;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -50,8 +55,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             if (claims != null & jwtUtil.validateClaims(claims)) {
                 String username = claims.getSubject();
                 System.out.println("username : " + username);
-                Authentication authentication = new UsernamePasswordAuthenticationToken(username, "",
-                        new ArrayList<>());
+                UserDetails user =  userDetailsService.loadUserByUsername(username);
+                Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception e) {
