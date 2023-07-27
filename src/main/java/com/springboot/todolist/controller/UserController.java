@@ -61,7 +61,7 @@ public class UserController {
 
 		try {
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-					authenticationRequest.getPassword(), authenticationRequest.getPassword()));
+					authenticationRequest.getUsername(), authenticationRequest.getPassword()));
 			UserDetails user = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
 			String token = jwtUtil.createToken(user);
 			AuthenticationResponse authRes = new AuthenticationResponse(token);
