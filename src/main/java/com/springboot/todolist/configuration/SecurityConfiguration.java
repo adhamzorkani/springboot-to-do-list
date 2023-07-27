@@ -28,6 +28,7 @@ public class SecurityConfiguration {
         this.userDetailsService = userDetailsService;
     }
 
+    @SuppressWarnings("deprecation")
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http, NoOpPasswordEncoder noOpPasswordEncoder)
             throws Exception {
@@ -41,12 +42,12 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
-            .authorizeRequests()
-            .requestMatchers("/api/admin/**").hasRole("ADMIN")
-            .requestMatchers("/api/user/**").hasAnyRole("ADMIN", "USER")
-            .requestMatchers("/api/auth/**").permitAll()
-            .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-            return http.build();
+                .authorizeRequests()
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/user/**").hasAnyRole("ADMIN", "USER")
+                .requestMatchers("/api/auth/**").permitAll()
+                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        return http.build();
     }
 
     @SuppressWarnings("deprecation")
