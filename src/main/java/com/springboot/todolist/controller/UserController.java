@@ -2,7 +2,6 @@ package com.springboot.todolist.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,6 +22,7 @@ import com.springboot.todolist.entity.Card;
 import com.springboot.todolist.entity.User;
 import com.springboot.todolist.models.request.AuthenticationRequest;
 import com.springboot.todolist.models.response.AuthenticationResponse;
+import com.springboot.todolist.models.response.ErrorResponse;
 import com.springboot.todolist.service.ICardService;
 import com.springboot.todolist.service.IUserService;
 import com.springboot.todolist.service.MyUserDetailsService;
@@ -35,43 +35,47 @@ public class UserController {
 	private IUserService userService;
 	private ICardService cardService;
 
-	@Autowired
-	private AuthenticationManager authenticationManager;
+	private final AuthenticationManager authenticationManager;
 
-	@Autowired
-	MyUserDetailsService userDetailsService;
+	private final MyUserDetailsService userDetailsService;
 
-	@Autowired
-	private JwtUtil jwtTokenUtil;
+	private JwtUtil jwtUtil;
 
-	public UserController(IUserService userService, ICardService cardService) {
-		super();
+	public UserController(IUserService userService, ICardService cardService,
+			AuthenticationManager authenticationManager, MyUserDetailsService userDetailsService, JwtUtil jwtUtil) {
+		this.authenticationManager = authenticationManager;
+		this.userDetailsService = userDetailsService;
+		this.jwtUtil = jwtUtil;
 		this.userService = userService;
 		this.cardService = cardService;
 	}
 
-	@PostMapping("/register")
+	@PostMapping("/auth/register")
 	public ResponseEntity<User> registerUser(@RequestBody User user) {
 		return new ResponseEntity<User>(userService.registerUser(user), HttpStatus.CREATED);
 	}
 
-	@PostMapping("/authenticate")
+	@PostMapping("/auth/login")
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest)
 			throws Exception {
 
 		try {
-			authenticationManager
-					.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
-							authenticationRequest.getPassword()));
+			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+					authenticationRequest.getPassword(), authenticationRequest.getPassword()));
+			UserDetails user = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+			String token = jwtUtil.createToken(user);
+			AuthenticationResponse authRes = new AuthenticationResponse(token);
+
+			return ResponseEntity.ok(authRes);
+
 		} catch (BadCredentialsException e) {
-			throw new Exception("Incorrect username or password", e);
+			ErrorResponse errorRes = new ErrorResponse(HttpStatus.BAD_REQUEST, "Invalid username or Password");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorRes);
+		} catch (Exception e) {
+			ErrorResponse errorRes = new ErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorRes);
 		}
 
-		final UserDetails userDetails =  userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-
-		final String jwt = jwtTokenUtil.generateToken(userDetails);
-
-		return ResponseEntity.ok(new AuthenticationResponse(jwt));
 	}
 
 	@GetMapping("/admin/users")
