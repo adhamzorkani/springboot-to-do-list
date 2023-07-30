@@ -1,7 +1,6 @@
 package com.springboot.todolist.filters;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.springboot.todolist.models.MyUserDetails;
 import com.springboot.todolist.service.MyUserDetailsService;
 import com.springboot.todolist.util.JwtUtil;
 
@@ -52,7 +50,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             System.out.println("token : " + accessToken);
             Claims claims = jwtUtil.resolveClaims(request);
 
-            if (claims != null & jwtUtil.validateClaims(claims)) {
+            if (claims != null && jwtUtil.validateClaims(claims)) {
                 String username = claims.getSubject();
                 System.out.println("username : " + username);
                 UserDetails user =  userDetailsService.loadUserByUsername(username);
