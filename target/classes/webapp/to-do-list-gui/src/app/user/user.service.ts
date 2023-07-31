@@ -17,38 +17,38 @@ export class UserService {
   constructor(private http: HttpClient) { }
 
   login(auth: Auth): Observable<any> {
-    return this.http.post<any>(this.userServiceURL + "/login", auth);
+    return this.http.post<any>(this.userServiceURL + "/auth/login", auth);
   }
-  
+
   saveUser(user: User): Observable<User> {
-    return this.http.post<User>(this.userServiceURL, user);
+    return this.http.post<User>(this.userServiceURL + "/auth/register", user);
   }
 
   getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this.userServiceURL);
+    return this.http.get<User[]>(this.userServiceURL + + '/admin/users');
   }
 
   getUser(id: number): Observable<User> {
-    return this.http.get<User>(this.userServiceURL + '/'+ id);
+    return this.http.get<User>(this.userServiceURL + '/user/' + id);
   }
 
   updateUser(user: User, id: number): Observable<User> {
-    return this.http.put<User>(this.userServiceURL + '/' + id, user);
+    return this.http.put<User>(this.userServiceURL + '/admin/user/' + id, user);
   }
 
   deleteUser(id: number): Observable<any> {
-    return this.http.delete<any>(this.userServiceURL+ '/' + id);
+    return this.http.delete<any>(this.userServiceURL + '/admin/user/' + id);
   }
 
   getUserCards(id: number): Observable<Card[]> {
-    return this.http.get<Card[]>(this.userServiceURL + '/' + id + '/cards')
+    return this.http.get<Card[]>(this.userServiceURL + " /user/" + id + "/cards");
   }
 
-  setID(id: number): void{
+  setID(id: number): void {
     this.ID = id;
   }
 
-  getID(): number{
+  getID(): number {
     return this.ID;
   }
 }

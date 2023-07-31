@@ -30,6 +30,31 @@
                     </p>
                 </div>
             </div>
+            <div class="row">
+                <label class="col-md-2 control-label">Active (true/false)</label>
+                <div class="col-md-4 mb-3">
+                    <input type="text" class="form-control bg-dark text-white" placeholder="Enter Active" id="active"
+                        name="active" [(ngModel)]="user.active" minlength="4" required #active="ngModel">
+                    <p class="text-danger" *ngIf="active.errors?.['required'] && active.touched">
+                        Active is required.
+                    </p>
+                    <p class="text-danger" *ngIf="active.errors?.['minlength']">
+                        Active must be at least 4 characters long.
+                    </p>
+                </div>
+                <label class="col-md-2 control-label">Authorities</label>
+                <div class="col-md-4 mb-3">
+                    <input type="text" class="form-control bg-dark text-white" placeholder="Enter authorities"
+                        id="authorities" name="authorities" [(ngModel)]="user.auth" minlength="3" required
+                        #authorities="ngModel">
+                    <p class="text-danger" *ngIf="authorities.errors?.['required'] && authorities.touched">
+                        Authorities is required.
+                    </p>
+                    <p class="text-danger" *ngIf="authorities.errors?.['minlength']">
+                        Authorities must be at least 3 characters long.
+                    </p>
+                </div>
+            </div>
         </div>
         <div class="card-footer d-flex justify-content-end">
             <button type="button" class="btn btn-success btn-sm" (click)="saveUser()" [disabled]="!userForm.form.valid">
