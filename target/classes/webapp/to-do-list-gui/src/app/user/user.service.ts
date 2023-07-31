@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { User } from './user';
 import { Observable } from 'rxjs';
 import { Card } from '../card/card';
+import { Auth } from './auth';
 
 
 @Injectable({
@@ -10,13 +11,17 @@ import { Card } from '../card/card';
 })
 export class UserService {
 
-  private userServiceURL = "http://localhost:8080/api/users";
+  private userServiceURL = "http://localhost:8080/api";
   private ID!: number;
 
   constructor(private http: HttpClient) { }
 
-  login(user: User): Observable<number> {
-    return this.http.post<number>(this.userServiceURL + "/login", user);
+  login(auth: Auth): Observable<any> {
+    return this.http.post<any>(this.userServiceURL + "/login", auth);
+  }
+  
+  saveUser(user: User): Observable<User> {
+    return this.http.post<User>(this.userServiceURL, user);
   }
 
   getUsers(): Observable<User[]> {
@@ -27,10 +32,6 @@ export class UserService {
     return this.http.get<User>(this.userServiceURL + '/'+ id);
   }
 
-  saveUser(user: User): Observable<User> {
-    return this.http.post<User>(this.userServiceURL, user);
-  }
-  
   updateUser(user: User, id: number): Observable<User> {
     return this.http.put<User>(this.userServiceURL + '/' + id, user);
   }

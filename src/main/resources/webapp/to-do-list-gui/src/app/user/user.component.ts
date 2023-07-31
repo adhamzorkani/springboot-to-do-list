@@ -24,7 +24,7 @@ export class UserComponent implements OnInit {
     if (id != 0) {
       this.userService.getUser(id).subscribe(user => this.user = user);
     } else {
-      this.user = new User(0, "", "");
+      this.user = new User(0, "", "", false, []);
     }
   }
 
