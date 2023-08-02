@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { User } from './user';
+import { User } from '../user';
 import { Observable } from 'rxjs';
-import { Card } from '../card/card';
-import { Auth } from './auth';
+import { Card } from '../../card/card';
+
 
 
 @Injectable({
@@ -15,14 +15,6 @@ export class UserService {
   private ID!: number;
 
   constructor(private http: HttpClient) { }
-
-  login(auth: Auth): Observable<any> {
-    return this.http.post<any>(this.userServiceURL + "/auth/login", auth);
-  }
-
-  saveUser(user: User): Observable<User> {
-    return this.http.post<User>(this.userServiceURL + "/auth/register", user);
-  }
 
   getUsers(): Observable<User[]> {
     return this.http.get<User[]>(this.userServiceURL + + '/admin/users');

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../user.service';
+import { UserService } from '../_services/user.service';
 import { User } from '../user';
 
 @Component({
@@ -29,7 +29,7 @@ export class UserListComponent implements OnInit {
   }
 
   deleteUser(user: User): void {
-    if (confirm("Are you sure you want to delete this user " + user.name + "?")) {
+    if (confirm("Are you sure you want to delete this user " + user.username + "?")) {
       this.userService.deleteUser(user.id).subscribe(response => {
         alert(response.message);
         this

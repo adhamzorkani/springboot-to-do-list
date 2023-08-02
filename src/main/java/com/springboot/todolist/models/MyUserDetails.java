@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.springboot.todolist.entity.User;
 
 public class MyUserDetails implements UserDetails {
-
+    private long id;
     private String username;
     private String password;
     private boolean active;
@@ -22,11 +22,40 @@ public class MyUserDetails implements UserDetails {
     }
 
     public MyUserDetails(User user) {
+        this.id = user.getId();
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.active = user.isActive();
         this.authorities = Arrays.stream(user.getAuthorities().split(",")).map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public void setAuthorities(List<GrantedAuthority> authorities) {
+        this.authorities = authorities;
     }
 
     @Override
@@ -46,12 +75,12 @@ public class MyUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-       return true;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-       return true;
+        return true;
     }
 
     @Override

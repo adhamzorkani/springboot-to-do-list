@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../user.service';
+import { UserService } from '../_services/user.service';
 import { Card } from 'src/app/card/card';
 import { CardService } from 'src/app/card/card.service';
 import { User } from '../user';
 import { ActivatedRoute } from '@angular/router';
+import { StorageService } from '../_services/storage.service';
 
 @Component({
   selector: 'app-usercards',
@@ -19,22 +20,20 @@ export class UsercardsComponent implements OnInit {
 
   cards!: Card[];
 
-  id!: number;
 
   user!: User;
 
-  constructor(private userService: UserService, private cardService: CardService, private route: ActivatedRoute) {
-
-  }
+  constructor(private userService: UserService, private cardService: CardService, private storageService: StorageService) { }
 
   ngOnInit(): void {
-    this.getId();
+    this.user = this.storageService.getUser();
+    console.log(this.user);
     this.getUserCards();
   }
 
   getUserCards(): void {
-    this.userService.getUserCards(this.id).subscribe(cards => this.cards = cards);
-    this.userService.getUser(this.id).subscribe(user => this.user = user)
+    this.userService.getUserCards(this.user.id).subscribe(cards => this.cards = cards);
+    this.userService.getUser(this.user.id).subscribe(user => this.user = user)
   }
 
   deleteCard(card: Card): void {
@@ -44,9 +43,5 @@ export class UsercardsComponent implements OnInit {
         this.getUserCards();
       });
     }
-  }
-
-  getId(): void {
-    this.id = this.userService.getID();
   }
 }

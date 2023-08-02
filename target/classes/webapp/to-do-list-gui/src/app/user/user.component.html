@@ -9,7 +9,7 @@
                 <label class="col-md-2 control-label">Username</label>
                 <div class="col-md-4 mb-3">
                     <input type="text" class="form-control bg-dark text-white" placeholder="Enter Username"
-                        id="username" name="name" [(ngModel)]="user.name" minlength="3" required #userName="ngModel">
+                        id="username" name="name" [(ngModel)]="user.username" minlength="3" required #userName="ngModel">
                     <p class="text-danger" *ngIf="userName.errors?.['required'] && userName.touched">
                         Username is required.
                     </p>
@@ -45,7 +45,7 @@
                 <label class="col-md-2 control-label">Authorities</label>
                 <div class="col-md-4 mb-3">
                     <input type="text" class="form-control bg-dark text-white" placeholder="Enter authorities"
-                        id="authorities" name="authorities" [(ngModel)]="user.auth" minlength="3" required
+                        id="authorities" name="authorities" [(ngModel)]="user.authorities" minlength="3" required
                         #authorities="ngModel">
                     <p class="text-danger" *ngIf="authorities.errors?.['required'] && authorities.touched">
                         Authorities is required.
@@ -57,7 +57,7 @@
             </div>
         </div>
         <div class="card-footer d-flex justify-content-end">
-            <button type="button" class="btn btn-success btn-sm" (click)="saveUser()" [disabled]="!userForm.form.valid">
+            <button type="button" class="btn btn-success btn-sm" (click)="onSubmit()" [disabled]="!userForm.form.valid">
                 <i class="fa fa-floppy-o"></i> {{user.id == 0 ? "save" : "Update"}}</button>&nbsp;
             <span *ngIf="user.id == 0">
                 <button type="reset" class="btn btn-info btn-sm"><i class="fa fa-refresh"></i> Reset</button>

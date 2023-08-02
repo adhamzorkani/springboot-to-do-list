@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.springboot.todolist.DTO.UserDTO;
 import com.springboot.todolist.entity.Card;
 import com.springboot.todolist.entity.User;
+import com.springboot.todolist.models.MyUserDetails;
 import com.springboot.todolist.models.request.AuthenticationRequest;
 import com.springboot.todolist.models.response.AuthenticationResponse;
 import com.springboot.todolist.models.response.ErrorResponse;
@@ -28,9 +29,9 @@ import com.springboot.todolist.service.IUserService;
 import com.springboot.todolist.service.MyUserDetailsService;
 import com.springboot.todolist.util.JwtUtil;
 
+// @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
 	private IUserService userService;
 	private ICardService cardService;
@@ -62,11 +63,13 @@ public class UserController {
 		try {
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
 					authenticationRequest.getUsername(), authenticationRequest.getPassword()));
-			UserDetails user = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+			MyUserDetails user = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
 			String token = jwtUtil.createToken(user);
 			AuthenticationResponse authRes = new AuthenticationResponse(token);
 
-			return ResponseEntity.ok(authRes);
+			UserDTO userDTO = new UserDTO(user, authRes.getJwt());
+
+			return ResponseEntity.ok(userDTO);
 
 		} catch (BadCredentialsException e) {
 			ErrorResponse errorRes = new ErrorResponse(HttpStatus.BAD_REQUEST, "Invalid username or Password");

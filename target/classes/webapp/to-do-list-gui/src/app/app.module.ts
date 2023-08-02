@@ -7,11 +7,12 @@ import { UserComponent } from './user/user.component';
 import { CardComponent } from './card/card.component';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http'
-import { UserService } from './user/user.service';
+import { UserService } from './user/_services/user.service';
 import { UserListComponent } from './user/user-list/user-list.component';
 import { CardlistComponent } from './card/cardlist/cardlist.component';
 import { UsercardsComponent } from './user/usercards/usercards.component';
 import { UserLoginComponent } from './user/user-login/user-login.component';
+import { httpInterceptorProviders } from './_helpers/http.interceptor';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,7 @@ import { UserLoginComponent } from './user/user-login/user-login.component';
     FormsModule,
     HttpClientModule
   ],
-  providers: [UserService],
+  providers: [UserService, httpInterceptorProviders],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

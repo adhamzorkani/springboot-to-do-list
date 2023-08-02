@@ -8,7 +8,7 @@
                 <label class="col-md-2 control-label">Username</label>
                 <div class="col-md-4 mb-3">
                     <input type="text" class="form-control bg-dark text-white" placeholder="Enter Username"
-                        id="username" name="name" [(ngModel)]="user.name" minlength="3" required #userName="ngModel">
+                        id="username" name="name" [(ngModel)]="form.username" minlength="3" required #userName="ngModel">
                     <p class="text-danger" *ngIf="userName.errors?.['required'] && userName.touched">
                         Username is required.
                     </p>
@@ -19,7 +19,7 @@
                 <label class="col-md-2 control-label">Password</label>
                 <div class="col-md-4 mb-3">
                     <input type="text" class="form-control bg-dark text-white" placeholder="Enter Password"
-                        id="password" name="password" [(ngModel)]="user.password" minlength="3" required
+                        id="password" name="password" [(ngModel)]="form.password" minlength="3" required
                         #password="ngModel">
                     <p class="text-danger" *ngIf="password.errors?.['required'] && password.touched">
                         password is required.
@@ -31,7 +31,7 @@
             </div>
         </div>
         <div class="card-footer d-flex justify-content-end">
-            <button type="button" class="btn btn-success btn-sm" (click)="login()"
+            <button type="button" class="btn btn-success btn-sm" (click)="onSubmit()"
                 [disabled]="!userLoginForm.form.valid"> login </button>&nbsp;
             <a routerLink="/register" class="btn btn-info btn-sm">Register</a>
         </div>

@@ -1,11 +1,11 @@
 <div>
-    <input type="text" class="bg-dark text-white" placeholder="Enter User Id" id="id" name="id" [(ngModel)]="id">&nbsp;
+    <input type="text" class="bg-dark text-white" placeholder="Enter User Id" id="id" name="id" [(ngModel)]="userid">&nbsp;
     <button type="button" class="btn btn-info btn-sm" (click)="getUserCards()"> Search </button>;
 </div>
 <br>
 <div class="card border border-dark bg-dark text-white">
     <div class="card-header">
-        <strong><i class="fa fa-list"></i> {{this.user.name + title}}</strong>
+        <strong><i class="fa fa-list"></i> {{this.user.username + title}}</strong>
     </div>
     <div class="card-body table-responsive">
         <div id="table-desktop">
