@@ -1,0 +1,71 @@
+<div class="card border border-dark bg-dark text-white">
+    <div class="card-header">
+        <strong *ngIf="user.id == 0"><i class="fa fa-plus-circle"></i> Add New User</strong>
+        <strong *ngIf="user.id != 0"><i class="fa fa-pencile-square-o"></i> Edit User</strong>
+    </div>
+    <form class="form-horizontal" #userForm="ngForm">
+        <div class="card-body">
+            <div class="row">
+                <label class="col-md-2 control-label">Username</label>
+                <div class="col-md-4 mb-3">
+                    <input type="text" class="form-control bg-dark text-white" placeholder="Enter Username"
+                        id="username" name="name" [(ngModel)]="user.username" minlength="3" required #userName="ngModel">
+                    <p class="text-danger" *ngIf="userName.errors?.['required'] && userName.touched">
+                        Username is required.
+                    </p>
+                    <p class="text-danger" *ngIf="userName.errors?.['minlength']">
+                        Username must be at least 3 characters long.
+                    </p>
+                </div>
+                <label class="col-md-2 control-label">Password</label>
+                <div class="col-md-4 mb-3">
+                    <input type="text" class="form-control bg-dark text-white" placeholder="Enter Password"
+                        id="password" name="password" [(ngModel)]="user.password" minlength="3" required
+                        #password="ngModel">
+                    <p class="text-danger" *ngIf="password.errors?.['required'] && password.touched">
+                        password is required.
+                    </p>
+                    <p class="text-danger" *ngIf="password.errors?.['minlength']">
+                        password must be at least 3 characters long.
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-md-2 control-label">Active (true/false)</label>
+                <div class="col-md-4 mb-3">
+                    <input type="text" class="form-control bg-dark text-white" placeholder="Enter Active" id="active"
+                        name="active" [(ngModel)]="user.active" minlength="4" required #active="ngModel">
+                    <p class="text-danger" *ngIf="active.errors?.['required'] && active.touched">
+                        Active is required.
+                    </p>
+                    <p class="text-danger" *ngIf="active.errors?.['minlength']">
+                        Active must be at least 4 characters long.
+                    </p>
+                </div>
+                <label class="col-md-2 control-label">Authorities</label>
+                <div class="col-md-4 mb-3">
+                    <input type="text" class="form-control bg-dark text-white" placeholder="Enter authorities"
+                        id="authorities" name="authorities" [(ngModel)]="user.authorities" minlength="3" required
+                        #authorities="ngModel">
+                    <p class="text-danger" *ngIf="authorities.errors?.['required'] && authorities.touched">
+                        Authorities is required.
+                    </p>
+                    <p class="text-danger" *ngIf="authorities.errors?.['minlength']">
+                        Authorities must be at least 3 characters long.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+            <button type="button" class="btn btn-success btn-sm" (click)="onSubmit()" [disabled]="!userForm.form.valid">
+                <i class="fa fa-floppy-o"></i> {{user.id == 0 ? "save" : "Update"}}</button>&nbsp;
+            <span *ngIf="user.id == 0">
+                <button type="reset" class="btn btn-info btn-sm"><i class="fa fa-refresh"></i> Reset</button>
+            </span>
+            <span *ngIf="user.id != 0">
+                <a routerLink="/users" class="btn btn-info btn-sm"><i class="fa fa-list"></i> Show List</a>
+            </span>
+
+        </div>
+    </form>
+</div>

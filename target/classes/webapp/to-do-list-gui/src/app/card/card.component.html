@@ -1,0 +1,108 @@
+<div class="card border border-dark bg-dark text-white">
+    <div class="card-header">
+        <strong *ngIf="card.id == 0"><i class="fa fa-plus-circle"></i> Add New Card</strong>
+        <strong *ngIf="card.id != 0"><i class="fa fa-pencile-square-o"></i> Edit Card</strong>
+    </div>
+    <form class="form-horizontal" #cardForm="ngForm">
+        <div class="card-body">
+            <div class="row">
+                <label class="col-md-2 control-label">Title</label>
+                <div class="col-md-4 mb-3">
+                    <input type="text" class="form-control bg-dark text-white" placeholder="Enter Title" id="title"
+                        name="title" [(ngModel)]="card.title" minlength="3" required #title="ngModel">
+                    <p class="text-danger" *ngIf="title.errors?.['required'] && title.touched">
+                        title is required.
+                    </p>
+                    <p class="text-danger" *ngIf="title.errors?.['minlength']">
+                        title must be at least 3 characters long.
+                    </p>
+                </div>
+                <label class="col-md-2 control-label">Description</label>
+                <div class="col-md-4 mb-3">
+                    <input type="text" class="form-control bg-dark text-white" placeholder="Enter Description"
+                        id="description" name="description" [(ngModel)]="card.description" minlength="5" required
+                        #description="ngModel">
+                    <p class="text-danger" *ngIf="description.errors?.['required'] && description.touched">
+                        Description is required.
+                    </p>
+                    <p class="text-danger" *ngIf="description.errors?.['minlength']">
+                        Description must be at least 5 characters long.
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-md-2 control-label">Category</label>
+                <div class="col-md-4 mb-3">
+                    <input type="text" class="form-control bg-dark text-white" placeholder="Enter Category"
+                        id="category" name="category" [(ngModel)]="card.category" minlength="3" required
+                        #category="ngModel">
+                    <p class="text-danger" *ngIf="category.errors?.['required'] && category.touched">
+                        Category is required.
+                    </p>
+                    <p class="text-danger" *ngIf="category.errors?.['minlength']">
+                        Category must be at least 3 characters long.
+                    </p>
+                </div>
+                <label class="col-md-2 control-label">Status</label>
+                <div class="col-md-4 mb-3">
+                    <input type="text" class="form-control bg-dark text-white" placeholder="Enter Status" id="status"
+                        name="status" [(ngModel)]="card.status" minlength="1" required #status="ngModel">
+                    <p class="text-danger" *ngIf="status.errors?.['required'] && status.touched">
+                        status is required.
+                    </p>
+                    <p class="text-danger" *ngIf="status.errors?.['minlength']">
+                        status must be between 1 and 5.
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-md-2 control-label">Priority</label>
+                <div class="col-md-4 mb-3">
+                    <input type="text" class="form-control bg-dark text-white" placeholder="Enter Priority"
+                        id="priority" name="priority" [(ngModel)]="card.priority" minlength="1" required
+                        #priority="ngModel">
+                    <p class="text-danger" *ngIf="priority.errors?.['required'] && priority.touched">
+                        priority is required.
+                    </p>
+                    <p class="text-danger" *ngIf="priority.errors?.['minlength']">
+                        priority must be at least 3 characters long.
+                    </p>
+                </div>
+                <label class="col-md-2 control-label">Date</label>
+                <div class="col-md-4 mb-3">
+                    <input type="text" class="form-control bg-dark text-white" placeholder="Enter Date" id="date"
+                        name="date" [(ngModel)]="card.date" minlength="10" required #date="ngModel">
+                    <p class="text-danger" *ngIf="date.errors?.['required'] && date.touched">
+                        date is required.
+                    </p>
+                    <p class="text-danger" *ngIf="status.errors?.['minlength']">
+                        date must be between in the format of YYYY-MM-DD.
+                    </p>
+                </div>
+            </div>
+            <div *ngIf="card.id == 0" class="row">
+                <label class="col-md-2 control-label">User ID</label>
+                <div class="col-md-4 mb-3">
+                    <input type="text" class="form-control bg-dark text-white" placeholder="Enter User ID" id="userId"
+                        name="userId" [(ngModel)]="id" minlength="1" required #userId="ngModel">
+                    <p class="text-danger" *ngIf="userId.errors?.['required'] && userId.touched">
+                        User ID is required.
+                    </p>
+                    <p class="text-danger" *ngIf="userId.errors?.['minlength']">
+                        User ID must be at least 1s characters long.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+            <button type="button" class="btn btn-success btn-sm" (click)="saveCard()" [disabled]="!cardForm.form.valid">
+                <i class="fa fa-floppy-o"></i> {{card.id == 0 ? "save" : "Update"}}</button>&nbsp;
+            <span *ngIf="card.id == 0">
+                <button type="reset" class="btn btn-info btn-sm"><i class="fa fa-refresh"></i> Reset</button>
+            </span>
+            <span *ngIf="card.id != 0">
+                <a routerLink="/cards" class="btn btn-info btn-sm"><i class="fa fa-list"></i> Show List</a>
+            </span>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,39 @@
+<div class="card border border-dark bg-dark text-white">
+    <div class="card-header">
+        <strong>Login</strong>
+    </div>
+    <form class="form-horizontal" #userLoginForm="ngForm">
+        <div class="card-body">
+            <div class="row">
+                <label class="col-md-2 control-label">Username</label>
+                <div class="col-md-4 mb-3">
+                    <input type="text" class="form-control bg-dark text-white" placeholder="Enter Username"
+                        id="username" name="name" [(ngModel)]="form.username" minlength="3" required #userName="ngModel">
+                    <p class="text-danger" *ngIf="userName.errors?.['required'] && userName.touched">
+                        Username is required.
+                    </p>
+                    <p class="text-danger" *ngIf="userName.errors?.['minlength']">
+                        Username must be at least 3 characters long.
+                    </p>
+                </div>
+                <label class="col-md-2 control-label">Password</label>
+                <div class="col-md-4 mb-3">
+                    <input type="text" class="form-control bg-dark text-white" placeholder="Enter Password"
+                        id="password" name="password" [(ngModel)]="form.password" minlength="3" required
+                        #password="ngModel">
+                    <p class="text-danger" *ngIf="password.errors?.['required'] && password.touched">
+                        password is required.
+                    </p>
+                    <p class="text-danger" *ngIf="password.errors?.['minlength']">
+                        password must be at least 3 characters long.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+            <button type="button" class="btn btn-success btn-sm" (click)="onSubmit()"
+                [disabled]="!userLoginForm.form.valid"> login </button>&nbsp;
+            <a routerLink="/register" class="btn btn-info btn-sm">Register</a>
+        </div>
+    </form>
+</div>
