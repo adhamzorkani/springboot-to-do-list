@@ -1,12 +1,19 @@
 package com.springboot.todolist.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.springboot.todolist.DTO.UserDTO;
 import com.springboot.todolist.entity.Card;
 import com.springboot.todolist.entity.User;
 import com.springboot.todolist.models.MyUserDetails;
@@ -29,27 +35,28 @@ import com.springboot.todolist.service.IUserService;
 import com.springboot.todolist.service.MyUserDetailsService;
 import com.springboot.todolist.util.JwtUtil;
 
-// @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api")
 public class UserController {
-	private IUserService userService;
-	private ICardService cardService;
 
-	private final AuthenticationManager authenticationManager;
+	@Autowired
+	AuthenticationManager authenticationManager;
 
-	private final MyUserDetailsService userDetailsService;
+	@Autowired
+	IUserService userService;
 
-	private JwtUtil jwtUtil;
+	@Autowired
+	ICardService cardService;
 
-	public UserController(IUserService userService, ICardService cardService,
-			AuthenticationManager authenticationManager, MyUserDetailsService userDetailsService, JwtUtil jwtUtil) {
-		this.authenticationManager = authenticationManager;
-		this.userDetailsService = userDetailsService;
-		this.jwtUtil = jwtUtil;
-		this.userService = userService;
-		this.cardService = cardService;
-	}
+	@Autowired
+	MyUserDetailsService userDetailsService;
+
+	@Autowired
+	PasswordEncoder encoder;
+
+	@Autowired
+	JwtUtil jwtUtil;
 
 	@PostMapping("/auth/register")
 	public ResponseEntity<User> registerUser(@RequestBody User user) {
@@ -57,20 +64,25 @@ public class UserController {
 	}
 
 	@PostMapping("/auth/login")
-	public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest)
+	public ResponseEntity<?> login(@RequestBody AuthenticationRequest authenticationRequest)
 			throws Exception {
 
 		try {
-			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+			Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
 					authenticationRequest.getUsername(), authenticationRequest.getPassword()));
-			MyUserDetails user = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-			String token = jwtUtil.createToken(user);
-			AuthenticationResponse authRes = new AuthenticationResponse(token);
 
-			UserDTO userDTO = new UserDTO(user, authRes.getJwt());
+			SecurityContextHolder.getContext().setAuthentication(authentication);
 
-			return ResponseEntity.ok(userDTO);
+			MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
 
+			ResponseCookie jwtCookie = jwtUtil.generateJwtCookie(userDetails);
+
+			List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
+					.collect(Collectors.toList());
+
+			return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+					.body(new AuthenticationResponse(userDetails.getId(), userDetails.getUsername(),
+							userDetails.isActive(), roles));
 		} catch (BadCredentialsException e) {
 			ErrorResponse errorRes = new ErrorResponse(HttpStatus.BAD_REQUEST, "Invalid username or Password");
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorRes);
